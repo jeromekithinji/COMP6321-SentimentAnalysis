@@ -30,11 +30,11 @@ def load_reviews(path: str) -> pd.DataFrame:
         raise ValueError(f"Unsupported file type: {ext}")
 
 def build_text_column(df: pd.DataFrame) -> pd.Series:
-    # Combine summary + reviewText if available; fall back gracefully
+    # Combine summary + reviewText
     summary = df.get("summary", "").fillna("")
     body = df.get("reviewText", "").fillna("")
     text = (summary + " " + body).str.strip()
-    # If both empty (different schema), try a generic 'text' column
+    # If summary + reviewText, try "text" column
     if (text == "").all() and "text" in df.columns:
         text = df["text"].fillna("").astype(str)
     
@@ -106,12 +106,12 @@ def main():
     save_npz(Xtr_path, Xtr)
     save_npz(Xte_path, Xte)
 
-    print("Done ✅")
+    print("Done")
     print(f"Vectorizer: {vec_path}")
     print(f"Train matrix: {Xtr_path}  shape={Xtr.shape}")
     print(f"Test  matrix: {Xte_path}  shape={Xte.shape}")
 
-    # Optional: quick peek at features
+    # Check vocab
     vocab = tfidf.get_feature_names_out()
     print("Vocab size:", len(tfidf.get_feature_names_out()))
     print("Sample vocab:", ", ".join(vocab[:50]))
