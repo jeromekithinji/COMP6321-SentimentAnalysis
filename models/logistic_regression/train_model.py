@@ -83,10 +83,9 @@ print(f"Predicted Sentiment: {prediction_neutral[0]}")
 # Define class names for better readability in the plot
 class_names = ['Negative (0)', 'Neutral (1)', 'Positive (2)']
 
-# --- 1. COMPUTE THE MATRIX ---
+
 cm = confusion_matrix(y_test, y_pred)
 
-# --- 2. PLOT: RAW COUNTS ---
 plt.figure(figsize=(8, 6))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
             xticklabels=class_names, 
@@ -95,9 +94,6 @@ plt.title('Confusion Matrix (Logistic Regression) - Raw Counts')
 plt.ylabel('Actual Sentiment')
 plt.xlabel('Predicted Sentiment')
 plt.show()
-
-# --- 3. PLOT: NORMALIZED (Percentages) ---
-# This divides each cell by the row total to get Recall (Sensitivity) per class
 cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
 plt.figure(figsize=(8, 6))
