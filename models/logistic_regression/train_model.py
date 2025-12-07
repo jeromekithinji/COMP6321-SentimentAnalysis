@@ -7,7 +7,10 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.svm import LinearSVC
 from imblearn.pipeline import Pipeline as ImbPipeline
 from imblearn.over_sampling import SMOTE
-
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from sklearn.metrics import confusion_matrix
 try:
     df = pd.read_csv('cleaned_amazon_reviews.csv')
 except FileNotFoundError:
@@ -77,3 +80,31 @@ new_text_neutral = ["the product is okay, not great but not terrible"]
 prediction_neutral = grid_search.predict(new_text_neutral)
 print(f"\nText: '{new_text_neutral[0]}'")
 print(f"Predicted Sentiment: {prediction_neutral[0]}")
+# Define class names for better readability in the plot
+class_names = ['Negative (0)', 'Neutral (1)', 'Positive (2)']
+
+# --- 1. COMPUTE THE MATRIX ---
+cm = confusion_matrix(y_test, y_pred)
+
+# --- 2. PLOT: RAW COUNTS ---
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=class_names, 
+            yticklabels=class_names)
+plt.title('Confusion Matrix (Logistic Regression) - Raw Counts')
+plt.ylabel('Actual Sentiment')
+plt.xlabel('Predicted Sentiment')
+plt.show()
+
+# --- 3. PLOT: NORMALIZED (Percentages) ---
+# This divides each cell by the row total to get Recall (Sensitivity) per class
+cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm_normalized, annot=True, fmt='.2f', cmap='Greens', 
+            xticklabels=class_names, 
+            yticklabels=class_names)
+plt.title('Confusion Matrix (Logistic Regression) - Normalized')
+plt.ylabel('Actual Sentiment')
+plt.xlabel('Predicted Sentiment')
+plt.show()
